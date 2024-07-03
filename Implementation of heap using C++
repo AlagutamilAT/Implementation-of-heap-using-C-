@@ -1,0 +1,119 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+class BHeap {
+private:
+    vector<int> heap;
+
+    int left(int parent) { return 2 * parent + 1; }
+    int right(int parent) { return 2 * parent + 2; }
+    int parent(int child) { return (child - 1) / 2; }
+
+    void heapifyUp(int index) {
+        while (index > 0 && heap[parent(index)] > heap[index]) {
+            swap(heap[index], heap[parent(index)]);
+            index = parent(index);
+        }
+    }
+
+    void heapifyDown(int index) {
+        int smallest = index;
+        int l = left(index);
+        int r = right(index);
+
+        if (l < heap.size() && heap[l] < heap[smallest]) {
+            smallest = l;
+        }
+        if (r < heap.size() && heap[r] < heap[smallest]) {
+            smallest = r;
+        }
+        if (smallest != index) {
+            swap(heap[index], heap[smallest]);
+            heapifyDown(smallest);
+        }
+    }
+
+public:
+    BHeap() {}
+
+    void insert(int element) {
+        heap.push_back(element);
+        heapifyUp(heap.size() - 1);
+    }
+
+    void deleteMin() {
+        if (heap.size() == 0) {
+            cout << "Heap is Empty" << endl;
+            return;
+        }
+        heap[0] = heap.back();
+        heap.pop_back();
+        heapifyDown(0);
+        cout << "Element Deleted" << endl;
+    }
+
+    int extractMin() {
+        if (heap.empty()) {
+            return -1;
+        }
+        return heap.front();
+    }
+
+    void showHeap() {
+        cout << "Heap --> ";
+        for (int i : heap) {
+            cout << i << " ";
+        }
+        cout << endl;
+    }
+
+    int size() {
+        return heap.size();
+    }
+};
+
+int main() {
+    BHeap h;
+
+    while (true) {
+        cout << "1. Insert Element" << endl;
+        cout << "2. Delete Minimum Element" << endl;
+        cout << "3. Extract Minimum Element" << endl;
+        cout << "4. Show Heap" << endl;
+        cout << "5. Exit" << endl;
+
+        int choice, element;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter the element to be inserted: ";
+                cin >> element;
+                h.insert(element);
+                break;
+            case 2:
+                h.deleteMin();
+                break;
+            case 3:
+                if (h.extractMin() == -1) {
+                    cout << "Heap is Empty" << endl;
+                } else {
+                    cout << "Minimum Element: " << h.extractMin() << endl;
+                }
+                break;
+            case 4:
+                cout << "Displaying elements of Heap: ";
+                h.showHeap();
+                break;
+            case 5:
+                exit(0);
+            default:
+                cout << "Enter Correct Choice" << endl;
+        }
+    }
+
+    return 0;
+}
